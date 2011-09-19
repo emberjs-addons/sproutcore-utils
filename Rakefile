@@ -33,11 +33,12 @@ def uglify(file)
 end
 
 SproutCore::Compiler.output = "tmp/static"
+SproutCore::Compiler.intermediate = "tmp/static"
 
 def compile_utils_task
   SproutCore::Compiler.intermediate = "tmp/sproutcore-utils"
   js_tasks = SproutCore::Compiler::Preprocessors::JavaScriptTask.with_input "lib/**/*.js", "."
-  SproutCore::Compiler::CombineTask.with_tasks js_tasks, "#{SproutCore::Compiler.intermediate.gsub(/tmp\//, "")}"
+  SproutCore::Compiler::CombineTask.with_tasks js_tasks, "#{SproutCore::Compiler.intermediate}/sproutcore-utils"
 end
 
 task :compile_utils_task => compile_utils_task
@@ -65,8 +66,14 @@ file "dist/sproutcore-utils.min.js" => "dist/sproutcore-utils.js" do
   File.open("dist/sproutcore-utils.min.js", "w") do |file|
     file.puts uglify("dist/sproutcore-utils.prod.js")
   end
+  rm "dist/sproutcore-utils.prod.js"
 end
 
+desc "Build SproutCore Utilities"
 task :dist => ["dist/sproutcore-utils.min.js"]
+
+task :clean do
+  sh "rm -rf tmp && rm -rf dist"
+end
 
 task :default => :dist
