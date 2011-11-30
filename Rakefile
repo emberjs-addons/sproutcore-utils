@@ -9,7 +9,7 @@ module SproutCore
   module Compiler
     class Entry
       def body
-        "\n(function(exports) {\n#{@raw_body}\n})({})\n"
+        "\n(function(exports) {\n#{@raw_body}\n})({});\n"
       end
     end
   end
